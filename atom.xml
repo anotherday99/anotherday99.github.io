@@ -6,7 +6,7 @@
   <link href="https://anotherday99.github.io/atom.xml" rel="self"/>
   
   <link href="https://anotherday99.github.io/"/>
-  <updated>2024-09-13T10:34:40.869Z</updated>
+  <updated>2024-09-13T11:50:49.870Z</updated>
   <id>https://anotherday99.github.io/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="https://anotherday99.github.io/2024/09/13/%E7%BB%99FreeBSD%E7%9A%84%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8pkg%E9%85%8D%E7%BD%AE%E5%9B%BD%E5%86%85%E6%9B%B4%E6%96%B0%E6%BA%90/"/>
     <id>https://anotherday99.github.io/2024/09/13/%E7%BB%99FreeBSD%E7%9A%84%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8pkg%E9%85%8D%E7%BD%AE%E5%9B%BD%E5%86%85%E6%9B%B4%E6%96%B0%E6%BA%90/</id>
     <published>2024-09-13T09:23:10.000Z</published>
-    <updated>2024-09-13T10:34:40.869Z</updated>
+    <updated>2024-09-13T11:50:49.870Z</updated>
     
-    <content type="html"><![CDATA[<p><strong>本系列所有文章</strong></p><ol><li><a href="/2024/09/13/%E7%BB%99FreeBSD%E7%9A%84%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8pkg%E9%85%8D%E7%BD%AE%E5%9B%BD%E5%86%85%E6%9B%B4%E6%96%B0%E6%BA%90/" title="给FreeBSD的包管理器pkg配置国内更新源">给FreeBSD的包管理器pkg配置国内更新源</a></li></ol><table><tr><td bgcolor=MistyRose>你可以通过使用右下角的小齿轮，来开启黑夜模式和阅读模式。</td></tr></table><hr><h1 id="适用于FreeBSD13-0版本及以上"><a href="#适用于FreeBSD13-0版本及以上" class="headerlink" title="适用于FreeBSD13.0版本及以上"></a><strong>适用于FreeBSD13.0版本及以上</strong></h1><p>FreeBSD包管理器pkg的官方源配置是&#x2F;etc&#x2F;pkg&#x2F;FreeBSD.conf，请先检查该文件内容。注意其中的url参数配置了官方仓库的地址，我们需要把它替换为镜像站的地址。</p><p>请注意，由于该配置文件是FreeBSD基本系统的一部分，会随着freebsd-update更新，请不要直接修改，我们需要创建&#x2F;usr&#x2F;local&#x2F;etc&#x2F;pkg&#x2F;repos&#x2F;FreeBSD.conf覆盖配置，文件内容如下：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">FreeBSD: &#123;</span><br><span class="line">  url: &quot;http://mirrors.ustc.edu.cn/freebsd-pkg/$&#123;ABI&#125;/quarterly&quot;,</span><br><span class="line">  mirror_type: &quot;none&quot;,</span><br><span class="line">  signature_type: &quot;none&quot;,</span><br><span class="line">  fingerprints: &quot;/usr/share/keys/pkg&quot;,</span><br><span class="line">  enabled: yes</span><br><span class="line">&#125;</span><br><span class="line">FreeBSD: &#123; enabled: no &#125;</span><br></pre></td></tr></table></figure><p><strong>如果要使用滚动更新的latest仓库，把url配置最后的quarterly换成latest即可。</strong></p><p><strong>修改配置后，运行pkg update -f更新索引。</strong></p>]]></content>
+    <content type="html"><![CDATA[<p><strong>本系列所有文章</strong></p><ol><li><a href="/2024/09/13/%E7%BB%99FreeBSD%E7%9A%84%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8pkg%E9%85%8D%E7%BD%AE%E5%9B%BD%E5%86%85%E6%9B%B4%E6%96%B0%E6%BA%90/" title="给FreeBSD的包管理器pkg配置国内更新源">给FreeBSD的包管理器pkg配置国内更新源</a></li></ol><table><tr><td bgcolor=MistyRose>你可以通过使用右下角的小齿轮，来开启黑夜模式和阅读模式。</td></tr></table><hr><h1 id="适用于FreeBSD13-0版本及以上"><a href="#适用于FreeBSD13-0版本及以上" class="headerlink" title="适用于FreeBSD13.0版本及以上"></a><strong>适用于FreeBSD13.0版本及以上</strong></h1><p>FreeBSD包管理器pkg的官方源配置是&#x2F;etc&#x2F;pkg&#x2F;FreeBSD.conf，请先检查该文件内容。注意其中的url参数配置了官方仓库的地址，我们需要把它替换为镜像站的地址。</p><p>请注意，由于该配置文件是FreeBSD基本系统的一部分，会随着freebsd-update更新，请不要直接修改，我们需要创建&#x2F;usr&#x2F;local&#x2F;etc&#x2F;pkg&#x2F;repos&#x2F;ustc.conf覆盖配置，文件内容如下：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ustc: &#123;</span><br><span class="line">  url: &quot;http://mirrors.ustc.edu.cn/freebsd-pkg/$&#123;ABI&#125;/quarterly&quot;,</span><br><span class="line">  mirror_type: &quot;none&quot;,</span><br><span class="line">  signature_type: &quot;none&quot;,</span><br><span class="line">  fingerprints: &quot;/usr/share/keys/pkg&quot;,</span><br><span class="line">  enabled: yes</span><br><span class="line">&#125;</span><br><span class="line">FreeBSD: &#123; enabled: no &#125;</span><br></pre></td></tr></table></figure><p><strong>如果要使用滚动更新的latest仓库，把url配置最后的quarterly换成latest即可。</strong></p><p><strong>修改配置后，运行pkg update -f更新索引。</strong></p>]]></content>
     
     
       
