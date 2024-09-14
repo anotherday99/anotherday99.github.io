@@ -6,7 +6,7 @@
   <link href="https://anotherday99.github.io/atom.xml" rel="self"/>
   
   <link href="https://anotherday99.github.io/"/>
-  <updated>2024-09-14T09:06:05.427Z</updated>
+  <updated>2024-09-14T12:08:20.625Z</updated>
   <id>https://anotherday99.github.io/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="https://anotherday99.github.io/2024/09/14/%E7%BB%99termux%E4%B8%8A%E7%9A%84Archlinux%E5%AE%89%E8%A3%85%E6%A1%8C%E9%9D%A2/"/>
     <id>https://anotherday99.github.io/2024/09/14/%E7%BB%99termux%E4%B8%8A%E7%9A%84Archlinux%E5%AE%89%E8%A3%85%E6%A1%8C%E9%9D%A2/</id>
     <published>2024-09-14T08:47:57.000Z</published>
-    <updated>2024-09-14T09:06:05.427Z</updated>
+    <updated>2024-09-14T12:08:20.625Z</updated>
     
-    <content type="html"><![CDATA[<p><strong>本系列所有文章</strong></p><ol><li><a href="/2024/09/14/termux%E5%AE%89%E8%A3%85archlinux%E6%95%99%E7%A8%8B/" title="termux安装archlinux教程">termux安装archlinux教程</a></li><li><a href="/2024/09/14/%E7%BB%99termux%E4%B8%8A%E7%9A%84Archlinux%E5%AE%89%E8%A3%85%E6%A1%8C%E9%9D%A2/" title="给termux上的Archlinux安装桌面">给termux上的Archlinux安装桌面</a></li></ol><table><tr><td bgcolor=MistyRose>你可以通过使用右下角的小齿轮，来开启黑夜模式和阅读模式。</td></tr></table><hr><h1 id="给termux上的Archlinux安装桌面"><a href="#给termux上的Archlinux安装桌面" class="headerlink" title="给termux上的Archlinux安装桌面"></a>给termux上的Archlinux安装桌面</h1><p>请保证安装桌面时有至少2GB空间存储可以使用。<br><strong>注意：请在Linux终端执行命令，而不是在termux终端执行。</strong></p><p>复制指令到Linux终端：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pacman -Sy --noconfirm wget &amp;&amp; wget https://sourceforge.net/projects/termux-archlinux-lxde/files/de-pac.sh --no-check-certificate &amp;&amp; bash de-pac.sh</span><br></pre></td></tr></table></figure><p><strong>以上指令会把LXDE桌面环境和VNC服务安装到你的系统。</strong></p>]]></content>
+    <content type="html"><![CDATA[<p><strong>本系列所有文章</strong></p><ol><li><a href="/2024/09/14/termux%E5%AE%89%E8%A3%85archlinux%E6%95%99%E7%A8%8B/" title="termux安装archlinux教程">termux安装archlinux教程</a></li><li><a href="/2024/09/14/%E7%BB%99termux%E4%B8%8A%E7%9A%84Archlinux%E5%AE%89%E8%A3%85%E6%A1%8C%E9%9D%A2/" title="给termux上的Archlinux安装桌面">给termux上的Archlinux安装桌面</a></li></ol><table><tr><td bgcolor=MistyRose>你可以通过使用右下角的小齿轮，来开启黑夜模式和阅读模式。</td></tr></table><hr><p><em><strong>不适用于新版tigervnc或其他新版vnc。</strong></em></p><h1 id="给termux上的Archlinux安装桌面"><a href="#给termux上的Archlinux安装桌面" class="headerlink" title="给termux上的Archlinux安装桌面"></a>给termux上的Archlinux安装桌面</h1><p>请保证安装桌面时有至少2GB空间存储可以使用。<br><strong>注意：请在Linux终端执行命令，而不是在termux终端执行。</strong></p><p>复制指令到Linux终端：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pacman -Sy --noconfirm wget &amp;&amp; wget https://sourceforge.net/projects/termux-archlinux-lxde/files/de-pac.sh --no-check-certificate &amp;&amp; bash de-pac.sh</span><br></pre></td></tr></table></figure><p><strong>以上指令会把LXDE桌面环境和VNC服务安装到你的系统。</strong></p>]]></content>
     
     
       
