@@ -6,7 +6,7 @@
   <link href="https://anotherday99.github.io/atom.xml" rel="self"/>
   
   <link href="https://anotherday99.github.io/"/>
-  <updated>2024-09-15T12:11:34.559Z</updated>
+  <updated>2024-09-29T09:43:41.460Z</updated>
   <id>https://anotherday99.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>论坛上线</title>
+    <link href="https://anotherday99.github.io/2024/09/29/%E8%AE%BA%E5%9D%9B%E4%B8%8A%E7%BA%BF/"/>
+    <id>https://anotherday99.github.io/2024/09/29/%E8%AE%BA%E5%9D%9B%E4%B8%8A%E7%BA%BF/</id>
+    <published>2024-09-29T09:14:44.000Z</published>
+    <updated>2024-09-29T09:43:41.460Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>本系列所有文章</strong></p><ol><li><a href="/2024/09/29/%E8%AE%BA%E5%9D%9B%E4%B8%8A%E7%BA%BF/" title="论坛上线">论坛上线</a></li></ol><table><tr><td bgcolor=MistyRose>你可以通过使用右下角的小齿轮，来开启黑夜模式和阅读模式。</td></tr></table><hr><h1 id="博客配套论坛"><a href="#博客配套论坛" class="headerlink" title="博客配套论坛"></a>博客配套论坛</h1><p><a href="http://tidechan.top/">Welcome to 论坛-TideChan潮汐</a></p><p><strong>欢迎大家注册交流.</strong></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;strong&gt;本系列所有文章&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;&lt;li&gt;&lt;a href=&quot;/2024/09/29/%E8%AE%BA%E5%9D%9B%E4%B8%8A%E7%BA%BF/&quot; title=&quot;论坛上线&quot;&gt;论坛上线&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;
+
+&lt;table&gt;</summary>
+      
+    
+    
+    
+    <category term="论坛" scheme="https://anotherday99.github.io/categories/%E8%AE%BA%E5%9D%9B/"/>
+    
+    
+    <category term="论坛" scheme="https://anotherday99.github.io/tags/%E8%AE%BA%E5%9D%9B/"/>
+    
+  </entry>
   
   <entry>
     <title>FreeBSD安装后的简单配置</title>
