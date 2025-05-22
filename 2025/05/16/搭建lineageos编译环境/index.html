@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>搭建lineageos编译环境 | 又一天过去了</title><meta name="author" content="anotherday99"><meta name="copyright" content="anotherday99"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="本系列所有文章 搭建lineageos编译环境  你可以通过使用右下角的小齿轮，来开启黑夜模式和阅读模式。   操作系统Debian12*需要root权限 【核心硬件建议：  CPU核心数：至少 8 核以上。性能优先级：多核性能 &gt; 单核性能（编译过程高度并行化）。 内存（RAM）最低要求：16GB（勉强可用，但可能因设备代码量不同而频繁卡顿），需要扩展swap，不然进程会被kill。推荐配">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建lineageos编译环境">
+<meta property="og:url" content="https://anotherday99.github.io/2025/05/16/%E6%90%AD%E5%BB%BAlineageos%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83/index.html">
+<meta property="og:site_name" content="又一天过去了">
+<meta property="og:description" content="本系列所有文章 搭建lineageos编译环境  你可以通过使用右下角的小齿轮，来开启黑夜模式和阅读模式。   操作系统Debian12*需要root权限 【核心硬件建议：  CPU核心数：至少 8 核以上。性能优先级：多核性能 &gt; 单核性能（编译过程高度并行化）。 内存（RAM）最低要求：16GB（勉强可用，但可能因设备代码量不同而频繁卡顿），需要扩展swap，不然进程会被kill。推荐配">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.helloimg.com/i/2024/09/20/66ed953d4e2d6.jpg">
+<meta property="article:published_time" content="2025-05-16T06:38:14.000Z">
+<meta property="article:modified_time" content="2025-05-22T08:22:05.765Z">
+<meta property="article:author" content="anotherday99">
+<meta property="article:tag" content="lineageOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.helloimg.com/i/2024/09/20/66ed953d4e2d6.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "搭建lineageos编译环境",
+  "url": "https://anotherday99.github.io/2025/05/16/%E6%90%AD%E5%BB%BAlineageos%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83/",
+  "image": "https://www.helloimg.com/i/2024/09/20/66ed953d4e2d6.jpg",
+  "datePublished": "2025-05-16T06:38:14.000Z",
+  "dateModified": "2025-05-22T08:22:05.765Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "anotherday99",
+      "url": "https://anotherday99.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://anotherday99.github.io/2025/05/16/%E6%90%AD%E5%BB%BAlineageos%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":true,"top_n_per_article":1,"unescape":true,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":150,"languages":{"author":"作者: anotherday99","link":"链接: ","source":"来源: 又一天过去了","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '搭建lineageos编译环境',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/transpancy.css"><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="又一天过去了" type="application/atom+xml">
+</head><body><div id="web_bg" style="background-image: url(https://www.helloimg.com/i/2024/09/20/66ed953bf0c6e.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://www.helloimg.com/i/2024/09/20/66ed953d4e2d6.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background: transparent;"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">又一天过去了</span></a><a class="nav-page-title" href="/"><span class="site-name">搭建lineageos编译环境</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">搭建lineageos编译环境</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-16T06:38:14.000Z" title="发表于 2025-05-16 14:38:14">2025-05-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-22T08:22:05.765Z" title="更新于 2025-05-22 16:22:05">2025-05-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/lineageOS%E7%BC%96%E8%AF%91/">lineageOS编译</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:30,&quot;messagePrev&quot;:&quot;本文距离上次的更新已经有&quot;,&quot;messageNext&quot;:&quot;天，文章的部分内容可能已经过时，请小心使用.如遇到问题，请通过邮箱联系我。&quot;,&quot;postUpdate&quot;:&quot;2025-05-22 16:22:05&quot;}" hidden></div><p><strong>本系列所有文章</strong></p>
+<ol class="series-items"><li><a href="/2025/05/16/%E6%90%AD%E5%BB%BAlineageos%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83/" title="搭建lineageos编译环境">搭建lineageos编译环境</a></li></ol>
+
+<table><tr><td bgcolor=MistyRose>你可以通过使用右下角的小齿轮，来开启黑夜模式和阅读模式。</td></tr></table>
+
+<hr>
+<p>操作系统Debian12<br>*需要root权限</p>
+<p>【核心硬件建议：</p>
+<ul>
+<li>CPU<br>核心数：至少 8 核以上。<br>性能优先级：多核性能 &gt; 单核性能（编译过程高度并行化）。</li>
+<li>内存（RAM）<br>最低要求：16GB（勉强可用，但可能因设备代码量不同而频繁卡顿），需要扩展swap，不然进程会被kill。<br>推荐配置：32GB 或更高（避免因内存不足导致编译中断）。</li>
+<li>存储（硬盘）<br>容量：至少 500GB 可用空间（源码 + 编译产物可能占用 300GB 以上，内存不够得开swap、后续加速编译要开ccache，也得个大几十GB）。<br>类型：NVMe SSD（编译过程涉及大量文件读写，SSD 速度直接影响效率）。</li>
+<li>操作系统<br>官方支持：Debian Stable（如 本文档使用的就是Debian 12）或 Ubuntu LTS（如 22.04&#x2F;24.04）。<br>其他系统：可尝试 Arch Linux 或 Fedora，但需自行解决依赖兼容性问题。<br>尽量避免使用 Windows，WSL 2 虽然可行，但性能和兼容性较差。<br>】</li>
+</ul>
+<hr>
+<p>云编译建议使用tmux，避免由于网络差掉ssh，被杀进程。基础使用:</p>
+<ul>
+<li>创建会话 tmux new -s ‘这里输入你想创建的会话名称’ 示例： tmux new -s lineage_build </li>
+<li>若需要离开tmux窗口，先按 Ctrl+b再按d，即可退出会话</li>
+<li>列出tmux后台会话进程，tmux ls</li>
+<li>重新连接后进入tmux会话或者查看编译进度，tmux attach -t  ‘这里输入你创建的会话名称’ 示例：tmux attach -t lineage_build</li>
+</ul>
+<hr>
+<h1 id="配置编译环境，安装软件包、编译工具和拉取lineageOS源代码"><a href="#配置编译环境，安装软件包、编译工具和拉取lineageOS源代码" class="headerlink" title="配置编译环境，安装软件包、编译工具和拉取lineageOS源代码"></a>配置编译环境，安装软件包、编译工具和拉取lineageOS源代码</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt update &amp;&amp; sudo apt upgrade -y</span><br><span class="line">sudo apt install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git git-lfs gnupg gperf imagemagick lib32ncurses-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.2-dev libxml2 libxml2-utils lzop maven pngcrush python3 python-is-python3 rsync schedtool squashfs-tools tmux unzip wget zip zlib1g-dev openjdk-17-jdk android-sdk-platform-tools-common protobuf-compiler python3-protobuf lib32readline-dev libdw-dev libelf-dev lz4  xsltproc libncurses5 libtinfo5</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mkdir -p ~/bin</span><br><span class="line">mkdir -p ~/android/lineage</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mkdir ~/.ccache</span><br><span class="line">echo &#x27;export USE_CCACHE=1&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line">echo &#x27;export CCACHE_DIR=~/.ccache&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br><span class="line">ccache -M 50G  # 设置缓存大小为 50GB，可以按需求自行调整，但是就算只编译一种设备的映像文件也建议25G起步。</span><br><span class="line">ccache -o compression=true</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">curl https://storage.googleapis.com/git-repo-downloads/repo &gt; ~/bin/repo</span><br><span class="line">chmod a+x ~/bin/repo</span><br><span class="line">echo &#x27;export PATH=&quot;$HOME/bin:$PATH&quot;&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.email &quot;you@example.com&quot;</span><br><span class="line">git config --global user.name &quot;Your Name&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git lfs install</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global trailer.changeid.key &quot;Change-Id&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd ~/android/lineage</span><br><span class="line">repo init -u https://github.com/LineageOS/android.git -b lineage-21.0 --git-lfs 【可选参数--no-clone-bundle】  #自行修改要拉取的lineage版本</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">repo sync</span><br></pre></td></tr></table></figure>
+<hr>
+<p><em><strong>编译lineageOS通用镜像【可以自行选择编译的lineageos的对应脚本】</strong></em><br>注意，安卓15的td编译脚本，推荐使用MisterZtr的lineageOS gsi。github上可以找到仓库。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/AndyCGYan/lineage_build_unified lineage_build_unified -b lineage-21-light</span><br><span class="line">git clone https://github.com/AndyCGYan/lineage_patches_unified lineage_patches_unified -b lineage-21-light</span><br></pre></td></tr></table></figure>
+<ul>
+<li>td即TD-based，应用TrebleDroid的全量补丁集和旧设备、三星等手机有更好的兼容性。</li>
+<li>light脚本应用的补丁则少得多，几乎只对一般的现代设备有用，编译出来的系统映像文件兼容性比td的要差些。</li>
+<li>请按自己的实际情况来选择，一般而言，除了老旧的设备和奇怪的冷门设备，一般可以使用light脚本构建的系统映像文件。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bash lineage_build_unified/buildbot_unified.sh treble 64VN 64VS 64GN #按需要选择参数编译</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="编译指定设备的lineageos，需要到github下载设备树、驱动、内核"><a href="#编译指定设备的lineageos，需要到github下载设备树、驱动、内核" class="headerlink" title="编译指定设备的lineageos，需要到github下载设备树、驱动、内核"></a>编译指定设备的lineageos，需要到github下载设备树、驱动、内核</h1><p>以oneplus 8t为例：<br>手动下载设备树、内核、专有文件（或通过local_manifest.xml自动拉取）<br>设备树路径：device&#x2F;oneplus&#x2F;kebab<br>内核路径：kernel&#x2F;oneplus&#x2F;sm8250<br>专有文件路径：vendor&#x2F;oneplus&#x2F;kebab 和 vendor&#x2F;oneplus&#x2F;sm8250-common<br>硬件支持路径：hardware&#x2F;oplus</p>
+<p>一加8T 设备树 <a target="_blank" rel="noopener" href="https://github.com/LineageOS/android_device_oneplus_kebab">https://github.com/LineageOS/android_device_oneplus_kebab</a> 文件放置路径 device&#x2F;oneplus&#x2F;kebab<br>SM8250 一加通用设备树：<a target="_blank" rel="noopener" href="https://github.com/LineageOS/android_device_oneplus_sm8250">https://github.com/LineageOS/android_device_oneplus_sm8250</a> 文件放置路径device&#x2F;oneplus&#x2F;sm8250-common<br>SM8250 一加内核：<a target="_blank" rel="noopener" href="https://github.com/LineageOS/android_kernel_oneplus_sm8250">https://github.com/LineageOS/android_kernel_oneplus_sm8250</a>  文件放置路径 kernel&#x2F;oneplus&#x2F;sm8250<br>SM8250 一加通用专有文件：<a target="_blank" rel="noopener" href="https://github.com/TheMuppets/proprietary_vendor_oneplus_sm8250-common">https://github.com/TheMuppets/proprietary_vendor_oneplus_sm8250-common</a> 文件放置路径 vendor&#x2F;oneplus&#x2F;kebab&#x2F;sm8250-common<br>一加8T专有文件：<a target="_blank" rel="noopener" href="https://github.com/TheMuppets/proprietary_vendor_oneplus_kebab">https://github.com/TheMuppets/proprietary_vendor_oneplus_kebab</a> 文件放置路径 vendor&#x2F;oneplus&#x2F;kebab<br>一加硬件支持：<a target="_blank" rel="noopener" href="https://github.com/LineageOS/android_hardware_oplus">https://github.com/LineageOS/android_hardware_oplus</a> 文件放置路径 hardware&#x2F;oplus</p>
+<p>推荐通过 local_manifest.xml 自动拉取</p>
+<ul>
+<li>在源码根目录创建 .repo&#x2F;local_manifests&#x2F;roomservice.xml</li>
+<li>添加设备树、内核、专有文件的仓库定义<br><em>以下是local_manifest.xml参考内容:</em></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;manifest&gt;</span><br><span class="line">  &lt;!-- 一加8T 设备树 --&gt;</span><br><span class="line">  &lt;project name=&quot;LineageOS/android_device_oneplus_kebab&quot; path=&quot;device/oneplus/kebab&quot; remote=&quot;github&quot; /&gt;</span><br><span class="line">  &lt;!-- SM8250 通用设备树 --&gt;</span><br><span class="line">  &lt;project name=&quot;LineageOS/android_device_oneplus_sm8250-common&quot; path=&quot;device/oneplus/sm8250-common&quot; remote=&quot;github&quot; /&gt;</span><br><span class="line">  &lt;!-- SM8250 内核 --&gt;</span><br><span class="line">  &lt;project name=&quot;LineageOS/android_kernel_oneplus_sm8250&quot; path=&quot;kernel/oneplus/sm8250&quot; remote=&quot;github&quot; /&gt;</span><br><span class="line">  &lt;!-- 一加8T 专有文件 --&gt;</span><br><span class="line">  &lt;project name=&quot;TheMuppets/proprietary_vendor_oneplus_kebab&quot; path=&quot;vendor/oneplus/kebab&quot; remote=&quot;github&quot; /&gt;</span><br><span class="line">  &lt;!-- SM8250 通用专有文件 --&gt;</span><br><span class="line">  &lt;project name=&quot;TheMuppets/proprietary_vendor_oneplus_sm8250-common&quot; path=&quot;vendor/oneplus/sm8250-common&quot; remote=&quot;github&quot; /&gt;</span><br><span class="line">  &lt;!-- 一加硬件支持 --&gt;</span><br><span class="line">  &lt;project name=&quot;LineageOS/android_hardware_oplus&quot; path=&quot;hardware/oplus&quot; remote=&quot;github&quot; /&gt;</span><br><span class="line">&lt;/manifest&gt;</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="编译lineageos映像文件"><a href="#编译lineageos映像文件" class="headerlink" title="编译lineageos映像文件"></a>编译lineageos映像文件</h1><p>1】对于编译通用镜像GSI，命令行进入lineageOS源码根目录，使用脚本指令”bash lineage_build_unified&#x2F;buildbot_unified.sh treble 64VN”即可<br>输出文件在用户主目录下，build-output里面</p>
+<p>2】对于编译指定设备的lineageOS,命令行进入lineageOS源码根目录，依次输入下列指令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">source build/envsetup.sh</span><br><span class="line">breakfast kebab</span><br><span class="line">croot</span><br><span class="line">brunch kebab</span><br></pre></td></tr></table></figure>
+<p>进入输出文件夹（假设构建完成并且没有错误）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd $OUT</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://anotherday99.github.io">anotherday99</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://anotherday99.github.io/2025/05/16/%E6%90%AD%E5%BB%BAlineageos%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83/">https://anotherday99.github.io/2025/05/16/搭建lineageos编译环境/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://anotherday99.github.io" target="_blank">又一天过去了</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/lineageOS/">lineageOS</a></div><div class="post-share"><div class="social-share" data-image="https://www.helloimg.com/i/2024/09/20/66ed953d4e2d6.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2024/09/15/FreeBSD%E5%AE%89%E8%A3%85%E5%90%8E%E7%9A%84%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AE/" title="FreeBSD安装后的简单配置"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">FreeBSD安装后的简单配置</div></div><div class="info-2"><div class="info-item-1">本系列所有文章  FreeBSD安装后的简单配置给FreeBSD的包管理器pkg配置国内更新源  你可以通过使用右下角 的小齿轮，来开启黑夜模式和阅读模式。   如果提示无法解析域名修改 &#x2F;etc&#x2F;resolv.conf，添加 nameserver 114.114.114.114nameserver 114.114.114.115  修改pkg包管理器安装源新建路径&#x2F;usr&#x2F;local&#x2F;etc&#x2F;pkg&#x2F;repos&#x2F;ustc.conf文章内容如下： ustc: &#123;    url: &quot;http://mirrors.ustc.edu.cn/freebsd-pkg/$&#123;ABI&#125;/quarterly&quot;,    mirror_type: &quot;none&quot;,    signature_type: &quot;none&quot;,    fingerprints: &quot;/usr/share/keys/pkg&quot;,   ...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83%EF%BC%8C%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E5%8C%85%E3%80%81%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E5%92%8C%E6%8B%89%E5%8F%96lineageOS%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="toc-number">1.</span> <span class="toc-text">配置编译环境，安装软件包、编译工具和拉取lineageOS源代码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E6%8C%87%E5%AE%9A%E8%AE%BE%E5%A4%87%E7%9A%84lineageos%EF%BC%8C%E9%9C%80%E8%A6%81%E5%88%B0github%E4%B8%8B%E8%BD%BD%E8%AE%BE%E5%A4%87%E6%A0%91%E3%80%81%E9%A9%B1%E5%8A%A8%E3%80%81%E5%86%85%E6%A0%B8"><span class="toc-number">2.</span> <span class="toc-text">编译指定设备的lineageos，需要到github下载设备树、驱动、内核</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BC%96%E8%AF%91lineageos%E6%98%A0%E5%83%8F%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">编译lineageos映像文件</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background: transparent;"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By anotherday99</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div><div class="footer_custom_text">嘿，欢迎来到我的<a href="https://anotherday99.github.io/">博客</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
